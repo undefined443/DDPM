@@ -45,16 +45,16 @@ class ToyModel(nn.Module):
             self.input_emb1 = SinusoidalEmbedding(time_emb_dim, scale=25.0)
             self.input_emb2 = SinusoidalEmbedding(time_emb_dim, scale=25.0)
             concat_size = 2 * time_emb_dim + time_emb_dim  # 2d concat time
-            input_dim = 2
+            self.input_dim = 2
         else:  # mnist
             concat_size = 28 * 28 + time_emb_dim  # mnist is 28*28
-            input_dim = 28 * 28
+            self.input_dim = 28 * 28
 
         layers = [nn.Linear(concat_size, hidden_dim), nn.GELU()]
         for _ in range(num_layers):
             layers.append(ResBlock(hidden_dim))
         layers.append(nn.LayerNorm(hidden_dim))
-        layers.append(nn.Linear(hidden_dim, input_dim))
+        layers.append(nn.Linear(hidden_dim, self.input_dim))
         self.joint_mlp = nn.Sequential(*layers)
 
     def forward(self, x, t):
